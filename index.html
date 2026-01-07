@@ -3,181 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZERO KARMA : ORACLE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+KR:wght@300;700&display=swap" rel="stylesheet">
+    <title>ZERO KARMA : MANDALA RITUAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-green: #00ff9d;
-            --dark-bg: #050505;
-            --glass: rgba(20, 20, 20, 0.9);
+            --neon-green: #00ff9d; --neon-blue: #00ccff; --neon-yellow: #ffcc00;
+            --neon-red: #ff0055; --neon-white: #ffffff;
+            --dark-bg: #050505; --glass: rgba(20, 20, 20, 0.85);
         }
 
         body {
-            margin: 0;
-            background-color: var(--dark-bg);
-            color: #fff;
-            font-family: 'Orbitron', 'Noto Sans KR', sans-serif;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
+            margin: 0; background-color: var(--dark-bg); color: #fff;
+            font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding: 20px; box-sizing: border-box;
         }
 
         .bubbles {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: radial-gradient(circle at 50% 50%, rgba(0, 255, 157, 0.1) 0%, transparent 60%);
             pointer-events: none;
         }
 
         h1 {
-            font-size: 1.8rem;
-            color: var(--neon-green);
-            text-shadow: 0 0 10px var(--neon-green);
-            letter-spacing: 3px;
-            text-align: center;
-            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green); letter-spacing: 3px; text-align: center; margin-top: 10px;
         }
 
-        .subtitle {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
+        .subtitle { font-size: 0.8rem; color: #888; margin-bottom: 30px; text-transform: uppercase; font-family: 'Orbitron', sans-serif; }
 
-        /* 만다라 컨테이너 */
-        .mandala-container {
-            position: relative;
-            width: 80vw;
-            height: 80vw;
-            max-width: 300px;
-            max-height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
+        /* 업로드 섹션 */
+        .upload-container {
+            position: relative; width: 60vw; height: 60vw; max-width: 200px; max-height: 200px;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 40px;
         }
-
-        .mantra-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            animation: spin 20s linear infinite;
-        }
-
+        .mantra-ring { position: absolute; width: 100%; height: 100%; animation: spin 20s linear infinite; }
         .seed-syllable {
-            width: 60%;
-            height: 60%;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(5px);
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: transform 0.2s;
+            width: 60%; height: 60%; border-radius: 50%; background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px); border: 2px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2); display: flex; justify-content: center;
+            align-items: center; cursor: pointer; z-index: 10; transition: transform 0.2s;
         }
-        
         .seed-syllable:active { transform: scale(0.95); }
-        .seed-syllable span { font-size: 3rem; color: #fff; }
-
+        .seed-syllable span { font-size: 2.5rem; color: #fff; }
         #upload-input { display: none; }
-
-        /* 오라클 처방전 섹션 (NEW) */
-        #oracle-section {
-            width: 100%;
-            max-width: 500px;
-            display: none; /* 분석 전엔 숨김 */
-            animation: slideUp 0.8s ease-out;
-            margin-bottom: 30px;
-        }
-
-        .oracle-card {
-            background: rgba(0,0,0,0.8);
-            border: 2px solid var(--neon-green);
-            padding: 25px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.1);
-        }
-        
-        .oracle-title { font-size: 1.2rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
-        .oracle-diagnosis { font-size: 1.1rem; font-weight: bold; margin-bottom: 20px; color: var(--neon-green); font-family: 'Noto Sans KR', sans-serif; }
-        .oracle-ritual { font-size: 0.9rem; color: #ccc; line-height: 1.6; font-family: 'Noto Sans KR', sans-serif; border-top: 1px dashed #555; padding-top: 15px; }
-        .oracle-mantra { margin-top: 20px; font-family: 'Orbitron', monospace; color: var(--neon-green); font-size: 0.9rem; letter-spacing: 1px; }
-
-        /* 결과 그리드 */
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-            padding-bottom: 50px;
-        }
-
-        .card {
-            background: var(--glass);
-            border: 1px solid #333;
-            padding: 15px;
-            border-left: 5px solid;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-info { text-align: left; }
-        .card-title { font-size: 0.9rem; text-transform: uppercase; color: #aaa; }
-        .card-desc { font-size: 0.8rem; color: #ccc; }
-        .card-value { font-size: 1.5rem; font-weight: bold; }
-        
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .scanning { animation: pulse 1s infinite; }
         @keyframes pulse { 50% { box-shadow: 0 0 40px var(--neon-green); } }
 
+        /* 1. 상단 만다라 그리드 배치 */
+        #mandala-grid {
+            display: grid; gap: 10px; margin-bottom: 30px;
+            grid-template-areas: 
+                ". north ."
+                "west center east"
+                ". south .";
+            width: 100%; max-width: 500px;
+        }
+        .card {
+            background: var(--glass); border: 1px solid #333; padding: 10px;
+            border-top: 3px solid; display: flex; flex-direction: column;
+            align-items: center; text-align: center; position: relative; min-height: 80px;
+        }
+        .card-pos { grid-area: auto; } /* JS로 할당 */
+        .direction-label { font-size: 0.6rem; color: #777; letter-spacing: 1px; margin-bottom: 5px; font-family: 'Orbitron', sans-serif; }
+        .card-title-kr { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
+        .card-title-en { font-size: 0.7rem; color: #aaa; margin-bottom: 5px; font-family: 'Orbitron', sans-serif;}
+        .card-value { font-size: 1.1rem; font-weight: bold; margin-top: auto; }
+        
+        /* 2. 중앙 진단 박스 */
+        #diagnosis-section {
+            width: 100%; max-width: 500px; display: none; /* 분석 전 숨김 */
+            animation: slideUp 0.8s ease-out; margin-bottom: 30px;
+        }
+        .diagnosis-card {
+            background: rgba(0,0,0,0.9); border: 2px solid var(--neon-green); padding: 20px;
+            text-align: center; box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+        }
+        .diag-header { font-size: 1rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-family: 'Orbitron', sans-serif;}
+        .diag-result { font-size: 1.3rem; font-weight: bold; color: var(--neon-green); word-break: keep-all; }
+
+        /* 3. 하단 수행 처방 섹션 */
+        #remedy-section {
+            width: 100%; max-width: 500px; display: none; /* 분석 전 숨김 */
+            animation: slideUp 1s ease-out; padding-bottom: 50px;
+        }
+        .remedy-box {
+            background: var(--glass); border-left: 4px solid #555; padding: 15px; margin-bottom: 15px;
+        }
+        .remedy-label { font-size: 0.8rem; color: #888; margin-bottom: 8px; display: block; font-family: 'Orbitron', sans-serif; letter-spacing: 1px;}
+        .sutra-text { font-size: 0.95rem; font-style: italic; color: #ddd; line-height: 1.5; word-break: keep-all;}
+        .practice-text { font-size: 0.95rem; color: #fff; line-height: 1.6; word-break: keep-all; white-space: pre-line;}
+        .mantra-text { font-family: 'Orbitron', monospace; color: var(--neon-green); font-size: 1rem; text-align: center; letter-spacing: 1px; border: 1px dashed var(--neon-green); padding: 10px; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="bubbles"></div>
     <h1>ZERO KARMA</h1>
-    <div class="subtitle">The Oracle Analyzer</div>
+    <div class="subtitle">Mandala Ritual System</div>
 
-    <div class="mandala-container">
+    <div class="upload-container">
         <svg class="mantra-ring" viewBox="0 0 300 300">
             <path id="circlePath" d="M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0" fill="none"/>
             <text fill="#00ff9d" font-size="13" font-family="monospace" letter-spacing="3">
-                <textPath href="#circlePath">
-                    OM TARE TUTTARE TURE SOHA ॐ OM TARE TUTTARE TURE SOHA ॐ
-                </textPath>
+                <textPath href="#circlePath">OM TARE TUTTARE TURE SOHA ॐ OM TARE TUTTARE TURE SOHA ॐ</textPath>
             </text>
         </svg>
-
-        <label for="upload-input" class="seed-syllable" id="drop-zone">
-            <span>𑖝𑖾</span>
-        </label>
+        <label for="upload-input" class="seed-syllable" id="drop-zone"><span>𑖝𑖾</span></label>
         <input type="file" id="upload-input" accept="image/*">
     </div>
 
-    <div id="oracle-section">
-        <div class="oracle-card" id="oracle-card">
-            <div class="oracle-title">Oracle Diagnosis</div>
-            <div class="oracle-diagnosis" id="oracle-diagnosis"></div>
-            <div class="oracle-ritual" id="oracle-ritual"></div>
-            <div class="oracle-mantra" id="oracle-mantra"></div>
+    <div id="mandala-grid"></div>
+
+    <div id="diagnosis-section">
+        <div class="diagnosis-card" id="diag-card">
+            <div class="diag-header">Current State Diagnosis</div>
+            <div class="diag-result" id="diag-result"></div>
         </div>
     </div>
 
-    <div id="results" class="results-grid"></div>
+    <div id="remedy-section">
+        <div class="remedy-box" id="sutra-box">
+            <span class="remedy-label">Ⅰ. SUTRA WISDOM (경전의 지혜)</span>
+            <div class="sutra-text" id="sutra-text"></div>
+        </div>
+        <div class="remedy-box" id="practice-box">
+            <span class="remedy-label">Ⅱ. TANTRA PRACTICE (탄트라 수행)</span>
+            <div class="practice-text" id="practice-text"></div>
+        </div>
+        <div class="remedy-box" id="mantra-box">
+            <span class="remedy-label" style="text-align: center;">Ⅲ. MANTRA CODE (진언)</span>
+            <div class="mantra-text" id="mantra-text"></div>
+        </div>
+    </div>
+
     <canvas id="canvas" style="display:none;"></canvas>
 
 <script>
@@ -185,160 +147,156 @@
     const dropZone = document.getElementById('drop-zone');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const resultsDiv = document.getElementById('results');
-    const oracleSection = document.getElementById('oracle-section');
+    
+    // Sections
+    const mandalaGrid = document.getElementById('mandala-grid');
+    const diagnosisSection = document.getElementById('diagnosis-section');
+    const remedySection = document.getElementById('remedy-section');
 
-    // 1. 데이터 베이스: 색상별 처방전 (Zero Karma Style)
+    // Data Structure (Expanded for Requirements)
     const TARGETS = {
-        'Blue':   { 
-            hue: 240, sanskrit: 'Akshobhya', wisdom: 'Mirror Wisdom', color: '#00ccff',
-            msg_title: "차가운 분노 / 과열된 이성",
-            msg_ritual: "당신의 내면은 지금 끓어오르기 직전입니다. 판단하려 하지 말고 거울처럼 비추십시오. 차가운 물 한 잔이 필요합니다.",
-            mantra: "OM VAJRA ARGA SOHA"
+        'White': { 
+            hue: 0, color: 'var(--neon-white)',
+            gridArea: 'center',
+            direction_kr: '중앙 (Center)',
+            sanskrit_kr: '비로자나불 (Vairocana)',
+            wisdom_kr: '법계체성지 (Dharma-Realm Wisdom)',
+            // Diagnosis & Remedy
+            diagnosis: "근원적 혼란 / 무지 혹은 순수",
+            sutra: "「마음도 없고, 마음 아님도 없고, 마음 없음도 없나니, 삼세의 일체 모든 부처님이 이 가운데서 방편으로 나시느니라.」 - 대승기신론",
+            practice: "[리셋 명상] 지금 이 순간, 모든 생각과 판단을 멈추십시오. 텅 빈 캔버스처럼 '모름'의 상태로 돌아가 깊은 심호흡을 3번 하십시오.",
+            mantra: "OM VAIROCANA HUM (옴 베로자나 훔)"
+        },
+        'Blue': { 
+            hue: 240, color: 'var(--neon-blue)',
+            gridArea: 'east',
+            direction_kr: '동방 (East)',
+            sanskrit_kr: '아촉불 (Akshobhya)',
+            wisdom_kr: '대원경지 (Mirror-like Wisdom)',
+            // Diagnosis & Remedy
+            diagnosis: "차가운 분노 / 이성의 과열",
+            sutra: "「성내는 마음은 불길 같아서 온갖 공덕의 숲을 태워버린다.」 - 대지도론",
+            practice: "[거울 관상] 당신의 감정은 당신이 아닙니다. 거울에 비친 영상일 뿐입니다. 차가운 물이나 탄산수를 마시며 뜨거운 속을 식히는 관상을 하십시오.",
+            mantra: "OM VAJRA ARGA SOHA (옴 바즈라 아르가 소하)"
         },
         'Yellow': { 
-            hue: 60,  sanskrit: 'Ratnasambhava', wisdom: 'Equality Wisdom', color: '#ffcc00',
-            msg_title: "자존감 결핍 / 혹은 오만",
-            msg_ritual: "남과 비교하지 마십시오. 당신은 이미 충분히 풍요롭습니다. 척추를 펴고, 땅의 견고함을 느끼며 앉으십시오.",
-            mantra: "OM RATNA SURYA SOHA"
+            hue: 60, color: 'var(--neon-yellow)',
+            gridArea: 'south',
+            direction_kr: '남방 (South)',
+            sanskrit_kr: '보생불 (Ratnasambhava)',
+            wisdom_kr: '평등성지 (Equality Wisdom)',
+            // Diagnosis & Remedy
+            diagnosis: "자존감 결핍 / 혹은 오만",
+            sutra: "「나다, 남이다 하는 분별을 내지 마라. 모든 존재는 본래 평등하다.」 - 유마경",
+            practice: "[대지 접촉] 척추를 곧게 펴고 앉아 엉덩이가 바닥에 닿는 느낌에 집중하십시오. 당신은 이미 이 대지처럼 견고하고 풍요롭습니다.",
+            mantra: "OM RATNA SURYA SOHA (옴 라트나 수리야 소하)"
         },
-        'Red':    { 
-            hue: 0,   sanskrit: 'Amitabha', wisdom: 'Discriminating Wisdom', color: '#ff0055',
-            msg_title: "강렬한 욕망 / 관계의 갈증",
-            msg_ritual: "타인을 향한 열망을 창조적 에너지로 돌리십시오. 사랑하고 싶은 마음으로 당신 자신을 먼저 안아주세요.",
-            mantra: "OM ARO LIK SOHA"
+        'Red': { 
+            hue: 0, color: 'var(--neon-red)',
+            gridArea: 'west',
+            direction_kr: '서방 (West)',
+            sanskrit_kr: '아미타불 (Amitabha)',
+            wisdom_kr: '묘관찰지 (Discriminating Wisdom)',
+            // Diagnosis & Remedy
+            diagnosis: "강렬한 욕망 / 관계의 갈증",
+            sutra: "「욕망은 소금물과 같아서 마실수록 목이 마르다. 오직 자비심만이 이 갈증을 재운다.」 - 법구경",
+            practice: "[자비 변환] 타인을 향한 뜨거운 욕망을, 그들이 행복하기를 바라는 따뜻한 자비심으로 상상하며 심장으로 호흡하십시오.",
+            mantra: "OM ARO LIK SOHA (옴 아로 릭 소하)"
         },
-        'Green':  { 
-            hue: 120, sanskrit: 'Amoghasiddhi', wisdom: 'All-Accomplishing', color: '#00ff9d',
-            msg_title: "실행 불안 / 질투와 조급함",
-            msg_ritual: "생각은 그만하고 지금 당장 움직이십시오. 작은 한 걸음이 모든 두려움을 파괴합니다. Just Do It.",
-            mantra: "OM TARE TUTTARE TURE SOHA"
-        },
-        'White':  { 
-            hue: 0,   sanskrit: 'Vairocana', wisdom: 'Dharma Realm', color: '#ffffff',
-            msg_title: "혼란 / 무지 혹은 순수",
-            msg_ritual: "머릿속이 너무 복잡하거나, 반대로 멍한 상태입니다. 모든 것을 리셋(Reset)하십시오. 깊은 심호흡 3번이 필요합니다.",
-            mantra: "OM VAIROCANA HUM"
+        'Green': { 
+            hue: 120, color: 'var(--neon-green)',
+            gridArea: 'north',
+            direction_kr: '북방 (North)',
+            sanskrit_kr: '불공성취불 (Amoghasiddhi)',
+            wisdom_kr: '성소작지 (All-Accomplishing Wisdom)',
+            // Diagnosis & Remedy
+            diagnosis: "실행 불안 / 질투와 조급함",
+            sutra: "「두려워 마라. 행하는 자에게 길은 열린다. 모든 것은 마음이 지어내는 것이다.」 - 화엄경",
+            practice: "[즉각 행동] 생각이 많으면 발이 묶입니다. 가장 작은 일 하나를 지금 당장 실행하십시오. (예: 책상 정리, 스쿼트 10회)",
+            mantra: "OM TARE TUTTARE TURE SOHA (옴 타레 투타레 투레 소하)"
         }
     };
+
+    // Mandala Grid Order (for looping)
+    const MANDALA_KEYS = ['Green', 'Red', 'White', 'Blue', 'Yellow']; // N, W, C, E, S order for layout
 
     uploadInput.addEventListener('change', handleFile);
 
     function handleFile(e) {
         const file = e.target.files[0];
         if (!file) return;
-
-        dropZone.classList.add('scanning');
-        dropZone.innerHTML = "<span>ॐ</span>"; 
-        oracleSection.style.display = 'none'; // 재분석 시 숨김
-        resultsDiv.innerHTML = '';
+        resetUI();
+        dropZone.classList.add('scanning'); dropZone.innerHTML = "<span>ॐ</span>";
 
         const img = new Image();
         img.onload = () => {
             const MAX_SIZE = 500;
-            let width = img.width;
-            let height = img.height;
-            if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
-            else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
-
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            
-            setTimeout(() => {
-                analyzeFuzzy(ctx.getImageData(0, 0, width, height));
-                dropZone.classList.remove('scanning');
-                dropZone.innerHTML = "<span>𑖝𑖾</span>";
-            }, 800);
+            let w = img.width, h = img.height;
+            if (w > h) { if (w > MAX_SIZE) { h *= MAX_SIZE/w; w = MAX_SIZE; } } 
+            else { if (h > MAX_SIZE) { w *= MAX_SIZE/h; h = MAX_SIZE; } }
+            canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+            setTimeout(() => { analyzeFuzzy(ctx.getImageData(0,0,w,h)); dropZone.classList.remove('scanning'); dropZone.innerHTML = "<span>𑖝𑖾</span>"; }, 800);
         };
         img.src = URL.createObjectURL(file);
     }
 
-    function rgbToHsv(r, g, b) {
-        r /= 255, g /= 255, b /= 255;
-        let max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h, s, v = max;
-        let d = max - min;
-        s = max == 0 ? 0 : d / max;
-        if (max == min) { h = 0; } 
-        else {
-            switch (max) {
-                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                case g: h = (b - r) / d + 2; break;
-                case b: h = (r - g) / d + 4; break;
-            }
-            h /= 6;
-        }
-        return [h * 360, s, v];
+    function resetUI() {
+        mandalaGrid.innerHTML = '';
+        diagnosisSection.style.display = 'none';
+        remedySection.style.display = 'none';
     }
 
-    function getMembership(value, target, range = 45) {
-        let diff = Math.abs(value - target);
-        if (diff > 180) diff = 360 - diff;
-        if (diff > range) return 0;
-        return 1 - (diff / range);
-    }
+    function rgbToHsv(r, g, b) { /* (이전과 동일) */ r/=255,g/=255,b/=255;let max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,v=max;let d=max-min;s=max==0?0:d/max;if(max==min){h=0}else{switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6}return[h*360,s,v]; }
+    function getMembership(value, target, range=45) { let diff=Math.abs(value-target);if(diff>180)diff=360-diff;if(diff>range)return 0;return 1-(diff/range); }
 
     function analyzeFuzzy(imageData) {
         const data = imageData.data;
-        let scores = { 'Blue':0, 'Yellow':0, 'Red':0, 'Green':0, 'White':0 };
-        
-        for (let i = 0; i < data.length; i += 16) {
-            let r = data[i], g = data[i+1], b = data[i+2];
-            let [h, s, v] = rgbToHsv(r, g, b);
-
-            let whiteScore = 0;
-            if (s < 0.15 && v > 0.8) {
-                whiteScore = (1 - s) * v;
-                scores['White'] += whiteScore;
-            }
-            if (whiteScore < 0.8) { 
-                for (let key of ['Red', 'Blue', 'Yellow', 'Green']) {
-                    let mem = getMembership(h, TARGETS[key].hue);
-                    let intensity = mem * s * v; 
-                    if (intensity > 0) scores[key] += intensity;
-                }
-            }
+        let scores = { 'Blue':0,'Yellow':0,'Red':0,'Green':0,'White':0 };
+        for (let i=0; i<data.length; i+=16) {
+            let r=data[i],g=data[i+1],b=data[i+2]; let [h,s,v]=rgbToHsv(r,g,b);
+            let whiteScore=0; if(s<0.15 && v>0.8) { whiteScore=(1-s)*v; scores['White']+=whiteScore; }
+            if(whiteScore<0.8) { for(let key of ['Red','Blue','Yellow','Green']){ let mem=getMembership(h,TARGETS[key].hue); let intensity=mem*s*v; if(intensity>0)scores[key]+=intensity; }}
         }
+        let totalScore = Object.values(scores).reduce((a,b)=>a+b,0);
 
-        let totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
-        resultsDiv.innerHTML = '';
+        // 1. 상단 만다라 그리드 렌더링
+        MANDALA_KEYS.forEach(key => {
+            let percent = totalScore > 0 ? (scores[key]/totalScore*100).toFixed(1) : 0;
+            let card = document.createElement('div');
+            card.className = 'card'; card.style.borderColor = TARGETS[key].color; card.style.gridArea = TARGETS[key].gridArea;
+            card.innerHTML = `
+                <div class="direction-label">${TARGETS[key].direction_kr}</div>
+                <div class="card-title-kr">${TARGETS[key].sanskrit_kr}</div>
+                <div class="card-title-en">${TARGETS[key].wisdom_kr.split('(')[1].replace(')','')}</div>
+                <div class="card-value" style="color:${TARGETS[key].color}">${percent}%</div>
+            `;
+            mandalaGrid.appendChild(card);
+        });
 
-        // 2. 가장 높은 점수의 색상 찾기 (Dominant Color)
-        let maxKey = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-        let maxData = TARGETS[maxKey];
-
-        // 3. 오라클 처방전 출력
+        // 2. & 3. 진단 및 처방 렌더링 (가장 높은 점수 기준)
         if (totalScore > 0) {
-            const card = document.getElementById('oracle-card');
-            card.style.borderColor = maxData.color;
-            document.querySelector('.oracle-title').style.color = maxData.color;
-            
-            document.getElementById('oracle-diagnosis').innerText = maxData.msg_title;
-            document.getElementById('oracle-diagnosis').style.color = maxData.color;
-            
-            document.getElementById('oracle-ritual').innerHTML = maxData.msg_ritual;
-            document.getElementById('oracle-mantra').innerText = `[ CODE: ${maxData.mantra} ]`;
-            
-            oracleSection.style.display = 'block';
-        }
+            let maxKey = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            let data = TARGETS[maxKey];
 
-        // 4. 상세 스탯 출력
-        for (let key in TARGETS) {
-            let percent = totalScore > 0 ? (scores[key] / totalScore * 100).toFixed(1) : 0;
-            if (percent > 0) {
-                let card = document.createElement('div');
-                card.className = 'card';
-                card.style.borderLeftColor = TARGETS[key].color;
-                card.innerHTML = `
-                    <div class="card-info">
-                        <div class="card-title">${TARGETS[key].sanskrit}</div>
-                        <div class="card-desc">${TARGETS[key].wisdom}</div>
-                    </div>
-                    <div class="card-value" style="color:${TARGETS[key].color}">${percent}%</div>
-                `;
-                resultsDiv.appendChild(card);
-            }
+            // 진단 박스
+            document.getElementById('diag-card').style.borderColor = data.color;
+            document.getElementById('diag-result').innerText = data.diagnosis;
+            document.getElementById('diag-result').style.color = data.color;
+            diagnosisSection.style.display = 'block';
+
+            // 처방 섹션 (불경 -> 수행 -> 만트라)
+            document.getElementById('sutra-box').style.borderColor = data.color;
+            document.getElementById('sutra-text').innerText = data.sutra;
+            
+            document.getElementById('practice-box').style.borderColor = data.color;
+            document.getElementById('practice-text').innerText = data.practice;
+
+            document.getElementById('mantra-box').style.borderColor = data.color;
+            document.getElementById('mantra-text').innerText = data.mantra;
+            document.getElementById('mantra-text').style.color = data.color;
+            document.getElementById('mantra-text').style.borderColor = data.color;
+
+            remedySection.style.display = 'block';
         }
     }
 </script>
