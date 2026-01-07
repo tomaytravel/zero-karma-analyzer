@@ -2,16 +2,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>ZERO KARMA : TANTRA ANALYZER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZERO KARMA : ORACLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+KR:wght@300;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-green: #00ff9d;
-            --neon-blue: #00ccff;
-            --neon-red: #ff0055;
-            --neon-yellow: #ffcc00;
             --dark-bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(20, 20, 20, 0.9);
         }
 
         body {
@@ -24,205 +22,140 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        /* 배경 탄산 기포 효과 */
         .bubbles {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 157, 0.1) 0%, transparent 60%),
-                repeating-linear-gradient(0deg, transparent, transparent 2px, #000 3px);
+            background: radial-gradient(circle at 50% 50%, rgba(0, 255, 157, 0.1) 0%, transparent 60%);
             pointer-events: none;
         }
 
         h1 {
-            margin-top: 40px;
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             color: var(--neon-green);
-            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-            letter-spacing: 5px;
+            text-shadow: 0 0 10px var(--neon-green);
+            letter-spacing: 3px;
             text-align: center;
+            margin-top: 10px;
         }
 
         .subtitle {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #888;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 3px;
         }
 
-        /* 만다라 업로드 섹션 */
+        /* 만다라 컨테이너 */
         .mandala-container {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 80vw;
+            height: 80vw;
+            max-width: 300px;
+            max-height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
-        /* 회전하는 만트라 링 */
         .mantra-ring {
             position: absolute;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            border: 1px dashed rgba(0, 255, 157, 0.3);
             animation: spin 20s linear infinite;
         }
-        
-        .mantra-text {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: var(--neon-green);
-            opacity: 0.7;
-        }
 
-        /* 중앙의 탐(TAM) 종자자 & 업로드 버튼 */
         .seed-syllable {
-            width: 180px;
-            height: 180px;
+            width: 60%;
+            height: 60%;
             border-radius: 50%;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
             border: 2px solid var(--neon-green);
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.2), inset 0 0 20px rgba(0, 255, 157, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
             z-index: 10;
-            overflow: hidden;
+            transition: transform 0.2s;
         }
+        
+        .seed-syllable:active { transform: scale(0.95); }
+        .seed-syllable span { font-size: 3rem; color: #fff; }
 
-        .seed-syllable:hover {
-            box-shadow: 0 0 50px var(--neon-green);
-            transform: scale(1.05);
-        }
+        #upload-input { display: none; }
 
-        .seed-syllable span {
-            font-size: 4rem;
-            color: #fff;
-            text-shadow: 0 0 15px #fff;
-        }
-
-        #upload-input {
-            display: none;
-        }
-
-        /* 캔버스 (이미지 미리보기) */
-        canvas {
-            max-width: 300px;
-            max-height: 300px;
-            border: 1px solid #333;
+        /* 오라클 처방전 섹션 (NEW) */
+        #oracle-section {
+            width: 100%;
+            max-width: 500px;
+            display: none; /* 분석 전엔 숨김 */
+            animation: slideUp 0.8s ease-out;
             margin-bottom: 30px;
-            display: none; /* 초기엔 숨김 */
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
-        /* 결과 카드 섹션 */
+        .oracle-card {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid var(--neon-green);
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.1);
+        }
+        
+        .oracle-title { font-size: 1.2rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        .oracle-diagnosis { font-size: 1.1rem; font-weight: bold; margin-bottom: 20px; color: var(--neon-green); font-family: 'Noto Sans KR', sans-serif; }
+        .oracle-ritual { font-size: 0.9rem; color: #ccc; line-height: 1.6; font-family: 'Noto Sans KR', sans-serif; border-top: 1px dashed #555; padding-top: 15px; }
+        .oracle-mantra { margin-top: 20px; font-family: 'Orbitron', monospace; color: var(--neon-green); font-size: 0.9rem; letter-spacing: 1px; }
+
+        /* 결과 그리드 */
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            width: 90%;
-            max-width: 1000px;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
             padding-bottom: 50px;
         }
 
         .card {
-            background: rgba(20, 20, 20, 0.8);
+            background: var(--glass);
             border: 1px solid #333;
-            padding: 20px;
-            border-radius: 0; /* 사이버펑크 느낌 */
-            position: relative;
-            transition: transform 0.2s;
-            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+            padding: 15px;
+            border-left: 5px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #555;
-        }
-
-        .card-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            color: #aaa;
-        }
-
-        .card-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .card-desc {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 15px;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #333;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            box-shadow: 0 0 10px currentColor;
-        }
-
-        .rgb-code {
-            font-family: monospace;
-            font-size: 0.7rem;
-            color: #555;
-            margin-top: 10px;
-            text-align: right;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* 로딩 효과 */
-        .scanning {
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px var(--neon-green); }
-            50% { box-shadow: 0 0 50px var(--neon-green), 0 0 80px var(--neon-green); }
-            100% { box-shadow: 0 0 20px var(--neon-green); }
-        }
+        .card-info { text-align: left; }
+        .card-title { font-size: 0.9rem; text-transform: uppercase; color: #aaa; }
+        .card-desc { font-size: 0.8rem; color: #ccc; }
+        .card-value { font-size: 1.5rem; font-weight: bold; }
+        
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .scanning { animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { box-shadow: 0 0 40px var(--neon-green); } }
 
     </style>
 </head>
 <body>
 
     <div class="bubbles"></div>
-
     <h1>ZERO KARMA</h1>
-    <div class="subtitle">Yogini Tantra Fuzzy Analyzer</div>
+    <div class="subtitle">The Oracle Analyzer</div>
 
     <div class="mandala-container">
         <svg class="mantra-ring" viewBox="0 0 300 300">
             <path id="circlePath" d="M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0" fill="none"/>
-            <text fill="#00ff9d" font-size="14" font-family="monospace" letter-spacing="4">
+            <text fill="#00ff9d" font-size="13" font-family="monospace" letter-spacing="3">
                 <textPath href="#circlePath">
                     OM TARE TUTTARE TURE SOHA ॐ OM TARE TUTTARE TURE SOHA ॐ
                 </textPath>
@@ -235,10 +168,17 @@
         <input type="file" id="upload-input" accept="image/*">
     </div>
 
-    <canvas id="canvas"></canvas>
-
-    <div id="results" class="results-grid">
+    <div id="oracle-section">
+        <div class="oracle-card" id="oracle-card">
+            <div class="oracle-title">Oracle Diagnosis</div>
+            <div class="oracle-diagnosis" id="oracle-diagnosis"></div>
+            <div class="oracle-ritual" id="oracle-ritual"></div>
+            <div class="oracle-mantra" id="oracle-mantra"></div>
         </div>
+    </div>
+
+    <div id="results" class="results-grid"></div>
+    <canvas id="canvas" style="display:none;"></canvas>
 
 <script>
     const uploadInput = document.getElementById('upload-input');
@@ -246,75 +186,74 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const resultsDiv = document.getElementById('results');
+    const oracleSection = document.getElementById('oracle-section');
 
-    // 만다라 5지혜 설정 (Zero Karma Style)
+    // 1. 데이터 베이스: 색상별 처방전 (Zero Karma Style)
     const TARGETS = {
         'Blue':   { 
-            hue: 240, 
-            sanskrit: 'Akshobhya',
-            wisdom: '대원경지 (Mirror Wisdom)', 
-            desc: '분노를 냉철한 거울로 비추는 힘', 
-            color: '#00ccff' 
+            hue: 240, sanskrit: 'Akshobhya', wisdom: 'Mirror Wisdom', color: '#00ccff',
+            msg_title: "차가운 분노 / 과열된 이성",
+            msg_ritual: "당신의 내면은 지금 끓어오르기 직전입니다. 판단하려 하지 말고 거울처럼 비추십시오. 차가운 물 한 잔이 필요합니다.",
+            mantra: "OM VAJRA ARGA SOHA"
         },
         'Yellow': { 
-            hue: 60,  
-            sanskrit: 'Ratnasambhava',
-            wisdom: '평등성지 (Equality Wisdom)', 
-            desc: '자존감과 내면의 풍요', 
-            color: '#ffcc00' 
+            hue: 60,  sanskrit: 'Ratnasambhava', wisdom: 'Equality Wisdom', color: '#ffcc00',
+            msg_title: "자존감 결핍 / 혹은 오만",
+            msg_ritual: "남과 비교하지 마십시오. 당신은 이미 충분히 풍요롭습니다. 척추를 펴고, 땅의 견고함을 느끼며 앉으십시오.",
+            mantra: "OM RATNA SURYA SOHA"
         },
         'Red':    { 
-            hue: 0,   
-            sanskrit: 'Amitabha',
-            wisdom: '묘관찰지 (Discriminating Wisdom)', 
-            desc: '욕망을 자비로 승화하는 열정', 
-            color: '#ff0055' 
+            hue: 0,   sanskrit: 'Amitabha', wisdom: 'Discriminating Wisdom', color: '#ff0055',
+            msg_title: "강렬한 욕망 / 관계의 갈증",
+            msg_ritual: "타인을 향한 열망을 창조적 에너지로 돌리십시오. 사랑하고 싶은 마음으로 당신 자신을 먼저 안아주세요.",
+            mantra: "OM ARO LIK SOHA"
         },
         'Green':  { 
-            hue: 120, 
-            sanskrit: 'Amoghasiddhi',
-            wisdom: '성소작지 (All-Accomplishing)', 
-            desc: '질투를 실행력으로 바꾸는 에너지', 
-            color: '#00ff9d' 
+            hue: 120, sanskrit: 'Amoghasiddhi', wisdom: 'All-Accomplishing', color: '#00ff9d',
+            msg_title: "실행 불안 / 질투와 조급함",
+            msg_ritual: "생각은 그만하고 지금 당장 움직이십시오. 작은 한 걸음이 모든 두려움을 파괴합니다. Just Do It.",
+            mantra: "OM TARE TUTTARE TURE SOHA"
         },
         'White':  { 
-            hue: 0,   
-            sanskrit: 'Vairocana',
-            wisdom: '법계체성지 (Dharma-Realm)', 
-            desc: '무지를 씻어내는 순수', 
-            color: '#ffffff' 
+            hue: 0,   sanskrit: 'Vairocana', wisdom: 'Dharma Realm', color: '#ffffff',
+            msg_title: "혼란 / 무지 혹은 순수",
+            msg_ritual: "머릿속이 너무 복잡하거나, 반대로 멍한 상태입니다. 모든 것을 리셋(Reset)하십시오. 깊은 심호흡 3번이 필요합니다.",
+            mantra: "OM VAIROCANA HUM"
         }
     };
 
-    // 파일 선택 시
     uploadInput.addEventListener('change', handleFile);
 
     function handleFile(e) {
         const file = e.target.files[0];
         if (!file) return;
 
-        // 로딩 효과
         dropZone.classList.add('scanning');
-        dropZone.innerHTML = "<span>ॐ</span>"; // OM으로 변경
+        dropZone.innerHTML = "<span>ॐ</span>"; 
+        oracleSection.style.display = 'none'; // 재분석 시 숨김
+        resultsDiv.innerHTML = '';
 
         const img = new Image();
         img.onload = () => {
-            canvas.style.display = 'block';
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
+            const MAX_SIZE = 500;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
+            else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
             
-            // 0.5초 딜레이 후 분석 (의식적 효과)
             setTimeout(() => {
-                analyzeFuzzy(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                analyzeFuzzy(ctx.getImageData(0, 0, width, height));
                 dropZone.classList.remove('scanning');
-                dropZone.innerHTML = "<span>𑖝𑖾</span>"; // 다시 TAM으로
-            }, 500);
+                dropZone.innerHTML = "<span>𑖝𑖾</span>";
+            }, 800);
         };
         img.src = URL.createObjectURL(file);
     }
 
-    // RGB -> HSV 변환
     function rgbToHsv(r, g, b) {
         r /= 255, g /= 255, b /= 255;
         let max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -333,79 +272,70 @@
         return [h * 360, s, v];
     }
 
-    // 퍼지 로직 함수
     function getMembership(value, target, range = 45) {
         let diff = Math.abs(value - target);
-        if (diff > 180) diff = 360 - diff; 
+        if (diff > 180) diff = 360 - diff;
         if (diff > range) return 0;
         return 1 - (diff / range);
     }
 
-    // 분석 및 렌더링
     function analyzeFuzzy(imageData) {
         const data = imageData.data;
         let scores = { 'Blue':0, 'Yellow':0, 'Red':0, 'Green':0, 'White':0 };
-        let rgbSums = { 'Blue':[0,0,0], 'Yellow':[0,0,0], 'Red':[0,0,0], 'Green':[0,0,0], 'White':[0,0,0] };
-        let pixelCounts = { 'Blue':0, 'Yellow':0, 'Red':0, 'Green':0, 'White':0 };
-
-        for (let i = 0; i < data.length; i += 4) {
+        
+        for (let i = 0; i < data.length; i += 16) {
             let r = data[i], g = data[i+1], b = data[i+2];
             let [h, s, v] = rgbToHsv(r, g, b);
 
-            // White Detection
             let whiteScore = 0;
             if (s < 0.15 && v > 0.8) {
                 whiteScore = (1 - s) * v;
                 scores['White'] += whiteScore;
-                rgbSums['White'][0] += r * whiteScore;
-                rgbSums['White'][1] += g * whiteScore;
-                rgbSums['White'][2] += b * whiteScore;
-                pixelCounts['White'] += whiteScore;
             }
-
-            // Color Detection
             if (whiteScore < 0.8) { 
                 for (let key of ['Red', 'Blue', 'Yellow', 'Green']) {
                     let mem = getMembership(h, TARGETS[key].hue);
                     let intensity = mem * s * v; 
-                    
-                    if (intensity > 0) {
-                        scores[key] += intensity;
-                        rgbSums[key][0] += r * intensity;
-                        rgbSums[key][1] += g * intensity;
-                        rgbSums[key][2] += b * intensity;
-                        pixelCounts[key] += intensity;
-                    }
+                    if (intensity > 0) scores[key] += intensity;
                 }
             }
         }
 
         let totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
-        
-        // 카드 생성
         resultsDiv.innerHTML = '';
+
+        // 2. 가장 높은 점수의 색상 찾기 (Dominant Color)
+        let maxKey = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        let maxData = TARGETS[maxKey];
+
+        // 3. 오라클 처방전 출력
+        if (totalScore > 0) {
+            const card = document.getElementById('oracle-card');
+            card.style.borderColor = maxData.color;
+            document.querySelector('.oracle-title').style.color = maxData.color;
+            
+            document.getElementById('oracle-diagnosis').innerText = maxData.msg_title;
+            document.getElementById('oracle-diagnosis').style.color = maxData.color;
+            
+            document.getElementById('oracle-ritual').innerHTML = maxData.msg_ritual;
+            document.getElementById('oracle-mantra').innerText = `[ CODE: ${maxData.mantra} ]`;
+            
+            oracleSection.style.display = 'block';
+        }
+
+        // 4. 상세 스탯 출력
         for (let key in TARGETS) {
             let percent = totalScore > 0 ? (scores[key] / totalScore * 100).toFixed(1) : 0;
-            
-            let avgR = pixelCounts[key] > 0 ? Math.round(rgbSums[key][0] / pixelCounts[key]) : 0;
-            let avgG = pixelCounts[key] > 0 ? Math.round(rgbSums[key][1] / pixelCounts[key]) : 0;
-            let avgB = pixelCounts[key] > 0 ? Math.round(rgbSums[key][2] / pixelCounts[key]) : 0;
-
-            if (percent > 0) { // 0%는 숨김
+            if (percent > 0) {
                 let card = document.createElement('div');
                 card.className = 'card';
-                card.style.borderColor = TARGETS[key].color;
+                card.style.borderLeftColor = TARGETS[key].color;
                 card.innerHTML = `
-                    <div class="card-title" style="color:${TARGETS[key].color}">${TARGETS[key].sanskrit}</div>
+                    <div class="card-info">
+                        <div class="card-title">${TARGETS[key].sanskrit}</div>
+                        <div class="card-desc">${TARGETS[key].wisdom}</div>
+                    </div>
                     <div class="card-value" style="color:${TARGETS[key].color}">${percent}%</div>
-                    <div class="card-desc">
-                        <strong>${TARGETS[key].wisdom}</strong><br>
-                        ${TARGETS[key].desc}
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width:${percent}%; background:${TARGETS[key].color}"></div>
-                    </div>
-                    <div class="rgb-code">RGB(${avgR}, ${avgG}, ${avgB})</div>
                 `;
                 resultsDiv.appendChild(card);
             }
