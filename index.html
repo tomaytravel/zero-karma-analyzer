@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>ZERO KARMA : TANTRA ANALYZER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+KR:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #00ff9d;
+            --neon-blue: #00ccff;
+            --neon-red: #ff0055;
+            --neon-yellow: #ffcc00;
+            --dark-bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Orbitron', 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 배경 탄산 기포 효과 */
+        .bubbles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 157, 0.1) 0%, transparent 60%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, #000 3px);
+            pointer-events: none;
+        }
+
+        h1 {
+            margin-top: 40px;
+            font-size: 2.5rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+            letter-spacing: 5px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* 만다라 업로드 섹션 */
+        .mandala-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        /* 회전하는 만트라 링 */
+        .mantra-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px dashed rgba(0, 255, 157, 0.3);
+            animation: spin 20s linear infinite;
+        }
+        
+        .mantra-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: var(--neon-green);
+            opacity: 0.7;
+        }
+
+        /* 중앙의 탐(TAM) 종자자 & 업로드 버튼 */
+        .seed-syllable {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.2), inset 0 0 20px rgba(0, 255, 157, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .seed-syllable:hover {
+            box-shadow: 0 0 50px var(--neon-green);
+            transform: scale(1.05);
+        }
+
+        .seed-syllable span {
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 0 0 15px #fff;
+        }
+
+        #upload-input {
+            display: none;
+        }
+
+        /* 캔버스 (이미지 미리보기) */
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+            display: none; /* 초기엔 숨김 */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* 결과 카드 섹션 */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1000px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 0; /* 사이버펑크 느낌 */
+            position: relative;
+            transition: transform 0.2s;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #555;
+        }
+
+        .card-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .rgb-code {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 로딩 효과 */
+        .scanning {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px var(--neon-green); }
+            50% { box-shadow: 0 0 50px var(--neon-green), 0 0 80px var(--neon-green); }
+            100% { box-shadow: 0 0 20px var(--neon-green); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bubbles"></div>
+
+    <h1>ZERO KARMA</h1>
+    <div class="subtitle">Yogini Tantra Fuzzy Analyzer</div>
+
+    <div class="mandala-container">
+        <svg class="mantra-ring" viewBox="0 0 300 300">
+            <path id="circlePath" d="M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0" fill="none"/>
+            <text fill="#00ff9d" font-size="14" font-family="monospace" letter-spacing="4">
+                <textPath href="#circlePath">
+                    OM TARE TUTTARE TURE SOHA ॐ OM TARE TUTTARE TURE SOHA ॐ
+                </textPath>
+            </text>
+        </svg>
+
+        <label for="upload-input" class="seed-syllable" id="drop-zone">
+            <span>𑖝𑖾</span>
+        </label>
+        <input type="file" id="upload-input" accept="image/*">
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="results" class="results-grid">
+        </div>
+
+<script>
+    const uploadInput = document.getElementById('upload-input');
+    const dropZone = document.getElementById('drop-zone');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const resultsDiv = document.getElementById('results');
+
+    // 만다라 5지혜 설정 (Zero Karma Style)
+    const TARGETS = {
+        'Blue':   { 
+            hue: 240, 
+            sanskrit: 'Akshobhya',
+            wisdom: '대원경지 (Mirror Wisdom)', 
+            desc: '분노를 냉철한 거울로 비추는 힘', 
+            color: '#00ccff' 
+        },
+        'Yellow': { 
+            hue: 60,  
+            sanskrit: 'Ratnasambhava',
+            wisdom: '평등성지 (Equality Wisdom)', 
+            desc: '자존감과 내면의 풍요', 
+            color: '#ffcc00' 
+        },
+        'Red':    { 
+            hue: 0,   
+            sanskrit: 'Amitabha',
+            wisdom: '묘관찰지 (Discriminating Wisdom)', 
+            desc: '욕망을 자비로 승화하는 열정', 
+            color: '#ff0055' 
+        },
+        'Green':  { 
+            hue: 120, 
+            sanskrit: 'Amoghasiddhi',
+            wisdom: '성소작지 (All-Accomplishing)', 
+            desc: '질투를 실행력으로 바꾸는 에너지', 
+            color: '#00ff9d' 
+        },
+        'White':  { 
+            hue: 0,   
+            sanskrit: 'Vairocana',
+            wisdom: '법계체성지 (Dharma-Realm)', 
+            desc: '무지를 씻어내는 순수', 
+            color: '#ffffff' 
+        }
+    };
+
+    // 파일 선택 시
+    uploadInput.addEventListener('change', handleFile);
+
+    function handleFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // 로딩 효과
+        dropZone.classList.add('scanning');
+        dropZone.innerHTML = "<span>ॐ</span>"; // OM으로 변경
+
+        const img = new Image();
+        img.onload = () => {
+            canvas.style.display = 'block';
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            // 0.5초 딜레이 후 분석 (의식적 효과)
+            setTimeout(() => {
+                analyzeFuzzy(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                dropZone.classList.remove('scanning');
+                dropZone.innerHTML = "<span>𑖝𑖾</span>"; // 다시 TAM으로
+            }, 500);
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
+    // RGB -> HSV 변환
+    function rgbToHsv(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, v = max;
+        let d = max - min;
+        s = max == 0 ? 0 : d / max;
+        if (max == min) { h = 0; } 
+        else {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return [h * 360, s, v];
+    }
+
+    // 퍼지 로직 함수
+    function getMembership(value, target, range = 45) {
+        let diff = Math.abs(value - target);
+        if (diff > 180) diff = 360 - diff; 
+        if (diff > range) return 0;
+        return 1 - (diff / range);
+    }
+
+    // 분석 및 렌더링
+    function analyzeFuzzy(imageData) {
+        const data = imageData.data;
+        let scores = { 'Blue':0, 'Yellow':0, 'Red':0, 'Green':0, 'White':0 };
+        let rgbSums = { 'Blue':[0,0,0], 'Yellow':[0,0,0], 'Red':[0,0,0], 'Green':[0,0,0], 'White':[0,0,0] };
+        let pixelCounts = { 'Blue':0, 'Yellow':0, 'Red':0, 'Green':0, 'White':0 };
+
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i], g = data[i+1], b = data[i+2];
+            let [h, s, v] = rgbToHsv(r, g, b);
+
+            // White Detection
+            let whiteScore = 0;
+            if (s < 0.15 && v > 0.8) {
+                whiteScore = (1 - s) * v;
+                scores['White'] += whiteScore;
+                rgbSums['White'][0] += r * whiteScore;
+                rgbSums['White'][1] += g * whiteScore;
+                rgbSums['White'][2] += b * whiteScore;
+                pixelCounts['White'] += whiteScore;
+            }
+
+            // Color Detection
+            if (whiteScore < 0.8) { 
+                for (let key of ['Red', 'Blue', 'Yellow', 'Green']) {
+                    let mem = getMembership(h, TARGETS[key].hue);
+                    let intensity = mem * s * v; 
+                    
+                    if (intensity > 0) {
+                        scores[key] += intensity;
+                        rgbSums[key][0] += r * intensity;
+                        rgbSums[key][1] += g * intensity;
+                        rgbSums[key][2] += b * intensity;
+                        pixelCounts[key] += intensity;
+                    }
+                }
+            }
+        }
+
+        let totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+        
+        // 카드 생성
+        resultsDiv.innerHTML = '';
+        for (let key in TARGETS) {
+            let percent = totalScore > 0 ? (scores[key] / totalScore * 100).toFixed(1) : 0;
+            
+            let avgR = pixelCounts[key] > 0 ? Math.round(rgbSums[key][0] / pixelCounts[key]) : 0;
+            let avgG = pixelCounts[key] > 0 ? Math.round(rgbSums[key][1] / pixelCounts[key]) : 0;
+            let avgB = pixelCounts[key] > 0 ? Math.round(rgbSums[key][2] / pixelCounts[key]) : 0;
+
+            if (percent > 0) { // 0%는 숨김
+                let card = document.createElement('div');
+                card.className = 'card';
+                card.style.borderColor = TARGETS[key].color;
+                card.innerHTML = `
+                    <div class="card-title" style="color:${TARGETS[key].color}">${TARGETS[key].sanskrit}</div>
+                    <div class="card-value" style="color:${TARGETS[key].color}">${percent}%</div>
+                    <div class="card-desc">
+                        <strong>${TARGETS[key].wisdom}</strong><br>
+                        ${TARGETS[key].desc}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${percent}%; background:${TARGETS[key].color}"></div>
+                    </div>
+                    <div class="rgb-code">RGB(${avgR}, ${avgG}, ${avgB})</div>
+                `;
+                resultsDiv.appendChild(card);
+            }
+        }
+    }
+</script>
+</body>
+</html>
