@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZERO KARMA : MANDALA RITUAL</title>
+    <title>ZERO KARMA : FINAL RITUAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -34,85 +34,110 @@
 
         /* 업로드 섹션 */
         .upload-container {
-            position: relative; width: 60vw; height: 60vw; max-width: 200px; max-height: 200px;
+            position: relative; width: 65vw; height: 65vw; max-width: 220px; max-height: 220px;
             display: flex; justify-content: center; align-items: center; margin-bottom: 40px;
         }
-        .mantra-ring { position: absolute; width: 100%; height: 100%; animation: spin 20s linear infinite; }
+        .mantra-ring { position: absolute; width: 100%; height: 100%; animation: spin 25s linear infinite; }
         .seed-syllable {
-            width: 60%; height: 60%; border-radius: 50%; background: rgba(255,255,255,0.05);
+            width: 68%; height: 68%; border-radius: 50%; background: rgba(255,255,255,0.05);
             backdrop-filter: blur(5px); border: 2px solid var(--neon-green);
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2); display: flex; justify-content: center;
-            align-items: center; cursor: pointer; z-index: 10; transition: transform 0.2s;
+            box-shadow: 0 0 25px rgba(0, 255, 157, 0.25); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer; z-index: 10; transition: all 0.3s ease;
+            text-align: center;
         }
+        .seed-syllable:hover { box-shadow: 0 0 40px rgba(0, 255, 157, 0.4); transform: scale(1.02); }
         .seed-syllable:active { transform: scale(0.95); }
-        .seed-syllable span { font-size: 2.5rem; color: #fff; }
+        .seed-icon { font-size: 2.5rem; color: #fff; line-height: 1.2; }
+        .upload-hint { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; color: var(--neon-green); margin-top: 8px; letter-spacing: 1px; font-weight: 700; }
         #upload-input { display: none; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .scanning { animation: pulse 1s infinite; }
-        @keyframes pulse { 50% { box-shadow: 0 0 40px var(--neon-green); } }
+        @keyframes pulse { 50% { box-shadow: 0 0 50px var(--neon-green); } }
 
-        /* 1. 상단 만다라 그리드 배치 */
+        /* 만다라 그리드 */
         #mandala-grid {
-            display: grid; gap: 10px; margin-bottom: 30px;
-            grid-template-areas: 
-                ". north ."
-                "west center east"
-                ". south .";
-            width: 100%; max-width: 500px;
+            display: grid; gap: 15px; margin-bottom: 40px;
+            grid-template-areas: ". north ." "west center east" ". south .";
+            width: 100%; max-width: 450px;
         }
         .card {
-            background: var(--glass); border: 1px solid #333; padding: 10px;
-            border-top: 3px solid; display: flex; flex-direction: column;
-            align-items: center; text-align: center; position: relative; min-height: 80px;
+            background: var(--glass); border: 1px solid #333; padding: 15px 10px;
+            border-top: 4px solid; display: flex; flex-direction: column;
+            align-items: center; text-align: center; position: relative;
+            aspect-ratio: 1 / 1; justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .card-pos { grid-area: auto; } /* JS로 할당 */
-        .direction-label { font-size: 0.6rem; color: #777; letter-spacing: 1px; margin-bottom: 5px; font-family: 'Orbitron', sans-serif; }
-        .card-title-kr { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
-        .card-title-en { font-size: 0.7rem; color: #aaa; margin-bottom: 5px; font-family: 'Orbitron', sans-serif;}
-        .card-value { font-size: 1.1rem; font-weight: bold; margin-top: auto; }
+        .direction-label { font-size: 0.55rem; color: #888; letter-spacing: 2px; margin-bottom: auto; font-family: 'Orbitron', sans-serif; }
+        .card-titles { margin: auto 0; }
+        .card-title-kr { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; word-break: keep-all;}
+        .card-title-en { font-size: 0.65rem; color: #bbb; font-family: 'Orbitron', sans-serif; letter-spacing: 0.5px;}
+        .card-value { font-size: 1.2rem; font-weight: bold; margin-top: auto; font-family: 'Orbitron', sans-serif; }
         
-        /* 2. 중앙 진단 박스 */
-        #diagnosis-section {
-            width: 100%; max-width: 500px; display: none; /* 분석 전 숨김 */
-            animation: slideUp 0.8s ease-out; margin-bottom: 30px;
-        }
+        /* 진단 박스 */
+        #diagnosis-section { width: 100%; max-width: 500px; display: none; animation: slideUp 0.8s ease-out; margin-bottom: 30px; }
         .diagnosis-card {
-            background: rgba(0,0,0,0.9); border: 2px solid var(--neon-green); padding: 20px;
-            text-align: center; box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+            background: rgba(0,0,0,0.9); border: 2px solid var(--neon-green); padding: 25px 20px;
+            text-align: center; box-shadow: 0 0 30px rgba(0, 255, 157, 0.15);
         }
-        .diag-header { font-size: 1rem; color: #fff; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-family: 'Orbitron', sans-serif;}
-        .diag-result { font-size: 1.3rem; font-weight: bold; color: var(--neon-green); word-break: keep-all; }
+        .diag-header { font-size: 1rem; color: #fff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 3px; font-family: 'Orbitron', sans-serif;}
+        .diag-result { font-size: 1.3rem; font-weight: bold; color: var(--neon-green); word-break: keep-all; line-height: 1.4; }
 
-        /* 3. 하단 수행 처방 섹션 */
-        #remedy-section {
-            width: 100%; max-width: 500px; display: none; /* 분석 전 숨김 */
-            animation: slideUp 1s ease-out; padding-bottom: 50px;
-        }
-        .remedy-box {
-            background: var(--glass); border-left: 4px solid #555; padding: 15px; margin-bottom: 15px;
-        }
-        .remedy-label { font-size: 0.8rem; color: #888; margin-bottom: 8px; display: block; font-family: 'Orbitron', sans-serif; letter-spacing: 1px;}
-        .sutra-text { font-size: 0.95rem; font-style: italic; color: #ddd; line-height: 1.5; word-break: keep-all;}
-        .practice-text { font-size: 0.95rem; color: #fff; line-height: 1.6; word-break: keep-all; white-space: pre-line;}
-        .mantra-text { font-family: 'Orbitron', monospace; color: var(--neon-green); font-size: 1rem; text-align: center; letter-spacing: 1px; border: 1px dashed var(--neon-green); padding: 10px; }
+        /* 처방 섹션 */
+        #remedy-section { width: 100%; max-width: 500px; display: none; animation: slideUp 1s ease-out; padding-bottom: 60px; }
+        .remedy-box { background: var(--glass); border-left: 4px solid #555; padding: 20px; margin-bottom: 20px; }
+        .remedy-label { font-size: 0.85rem; color: #999; margin-bottom: 12px; display: block; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; font-weight: 700;}
+        .sutra-text { font-size: 1rem; font-style: italic; color: #ddd; line-height: 1.6; word-break: keep-all;}
+        .practice-text { font-size: 1rem; color: #fff; line-height: 1.7; word-break: keep-all; white-space: pre-line;}
+        .mantra-box-style { text-align: center; border: 2px dashed var(--neon-green); background: rgba(0, 255, 157, 0.05);}
+        .mantra-text { font-family: 'Orbitron', monospace; color: var(--neon-green); font-size: 1.1rem; letter-spacing: 1.5px; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* DEEP DIVE 버튼 및 컨텐츠 */
+        #deep-dive-trigger { width: 100%; max-width: 500px; text-align: center; display: none; margin-bottom: 30px; }
+        .neon-btn {
+            background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green);
+            padding: 15px 30px; font-family: 'Orbitron', sans-serif; font-size: 1rem; cursor: pointer;
+            letter-spacing: 2px; transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .neon-btn:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 20px var(--neon-green); }
+        
+        #deep-dive-content { width: 100%; max-width: 500px; display: none; padding-bottom: 100px; }
+        .deep-box {
+            background: rgba(10, 10, 10, 0.95); border: 1px solid #444; padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 5px;
+        }
+        .deep-title { color: #fff; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; font-family: 'Orbitron', sans-serif; }
+        .deep-title span { margin-right: 10px; }
+        .step-list { list-style: none; padding: 0; margin: 0; text-align: left; }
+        .step-list li { margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6; color: #ccc; }
+        .step-list li strong { color: var(--neon-green); margin-right: 5px; }
+        
+        .link-btn {
+            display: inline-block; background: #222; color: #aaa; text-decoration: none;
+            padding: 10px 15px; margin-right: 10px; font-size: 0.8rem; border: 1px solid #444; transition: all 0.2s;
+            margin-top: 10px; font-family: 'Noto Sans KR', sans-serif;
+        }
+        .link-btn:hover { border-color: var(--neon-green); color: #fff; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="bubbles"></div>
     <h1>ZERO KARMA</h1>
-    <div class="subtitle">Mandala Ritual System</div>
+    <div class="subtitle">Multi-Dimensional Ritual</div>
 
     <div class="upload-container">
         <svg class="mantra-ring" viewBox="0 0 300 300">
             <path id="circlePath" d="M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0" fill="none"/>
-            <text fill="#00ff9d" font-size="13" font-family="monospace" letter-spacing="3">
-                <textPath href="#circlePath">OM TARE TUTTARE TURE SOHA ॐ OM TARE TUTTARE TURE SOHA ॐ</textPath>
+            <text fill="#00ff9d" font-size="13" font-family="monospace" letter-spacing="3.5" font-weight="bold">
+                <textPath href="#circlePath">OM TARE TUTTARE TURE SVAHA ॐ OM TARE TUTTARE TURE SVAHA ॐ</textPath>
             </text>
         </svg>
-        <label for="upload-input" class="seed-syllable" id="drop-zone"><span>𑖝𑖾</span></label>
+        <label for="upload-input" class="seed-syllable" id="drop-zone">
+            <span class="seed-icon">𑖝𑖾</span>
+            <span class="upload-hint">CLICK TO UPLOAD IMAGE</span>
+        </label>
         <input type="file" id="upload-input" accept="image/*">
     </div>
 
@@ -120,7 +145,7 @@
 
     <div id="diagnosis-section">
         <div class="diagnosis-card" id="diag-card">
-            <div class="diag-header">Current State Diagnosis</div>
+            <div class="diag-header">Oracle Diagnosis</div>
             <div class="diag-result" id="diag-result"></div>
         </div>
     </div>
@@ -134,9 +159,34 @@
             <span class="remedy-label">Ⅱ. TANTRA PRACTICE (탄트라 수행)</span>
             <div class="practice-text" id="practice-text"></div>
         </div>
-        <div class="remedy-box" id="mantra-box">
-            <span class="remedy-label" style="text-align: center;">Ⅲ. MANTRA CODE (진언)</span>
+        <div class="remedy-box mantra-box-style" id="mantra-box">
+            <span class="remedy-label" style="margin-bottom: 15px;">Ⅲ. MANTRA CODE (진언)</span>
             <div class="mantra-text" id="mantra-text"></div>
+        </div>
+    </div>
+
+    <div id="deep-dive-trigger">
+        <button class="neon-btn" id="btn-deep">DEEP DIVE : START RITUAL</button>
+    </div>
+
+    <div id="deep-dive-content">
+        <div class="deep-box" style="border-left: 3px solid #ffcc00;">
+            <div class="deep-title"><span>📖</span> SACRED TEXTS (소의경전)</div>
+            <div style="color:#ccc; font-size:0.9rem; margin-bottom:10px;" id="deep-sutra-desc"></div>
+            <a href="#" target="_blank" class="link-btn" id="link-sutra">원문 검색 (Google)</a>
+        </div>
+
+        <div class="deep-box" style="border-left: 3px solid #00ccff;">
+            <div class="deep-title"><span>🧘‍♂️</span> STEP-BY-STEP MEDITATION</div>
+            <ul class="step-list" id="deep-steps">
+                </ul>
+        </div>
+
+        <div class="deep-box" style="border-left: 3px solid #ff0055;">
+            <div class="deep-title"><span>🎧</span> SONIC DRIVE (만트라 청취)</div>
+            <div style="color:#ccc; font-size:0.9rem; margin-bottom:10px;">처방된 만트라의 파동을 직접 들으며 수행하십시오.</div>
+            <a href="#" target="_blank" class="link-btn" id="link-youtube">YouTube Listening</a>
+            <a href="#" target="_blank" class="link-btn" id="link-spotify">Spotify Search</a>
         </div>
     </div>
 
@@ -148,77 +198,30 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Sections
+    // UI Refs
     const mandalaGrid = document.getElementById('mandala-grid');
     const diagnosisSection = document.getElementById('diagnosis-section');
     const remedySection = document.getElementById('remedy-section');
+    const deepTrigger = document.getElementById('deep-dive-trigger');
+    const deepContent = document.getElementById('deep-dive-content');
+    const btnDeep = document.getElementById('btn-deep');
 
-    // Data Structure (Expanded for Requirements)
-    const TARGETS = {
-        'White': { 
-            hue: 0, color: 'var(--neon-white)',
-            gridArea: 'center',
-            direction_kr: '중앙 (Center)',
-            sanskrit_kr: '비로자나불 (Vairocana)',
-            wisdom_kr: '법계체성지 (Dharma-Realm Wisdom)',
-            // Diagnosis & Remedy
-            diagnosis: "근원적 혼란 / 무지 혹은 순수",
-            sutra: "「마음도 없고, 마음 아님도 없고, 마음 없음도 없나니, 삼세의 일체 모든 부처님이 이 가운데서 방편으로 나시느니라.」 - 대승기신론",
-            practice: "[리셋 명상] 지금 이 순간, 모든 생각과 판단을 멈추십시오. 텅 빈 캔버스처럼 '모름'의 상태로 돌아가 깊은 심호흡을 3번 하십시오.",
-            mantra: "OM VAIROCANA HUM (옴 베로자나 훔)"
-        },
-        'Blue': { 
-            hue: 240, color: 'var(--neon-blue)',
-            gridArea: 'east',
-            direction_kr: '동방 (East)',
-            sanskrit_kr: '아촉불 (Akshobhya)',
-            wisdom_kr: '대원경지 (Mirror-like Wisdom)',
-            // Diagnosis & Remedy
-            diagnosis: "차가운 분노 / 이성의 과열",
-            sutra: "「성내는 마음은 불길 같아서 온갖 공덕의 숲을 태워버린다.」 - 대지도론",
-            practice: "[거울 관상] 당신의 감정은 당신이 아닙니다. 거울에 비친 영상일 뿐입니다. 차가운 물이나 탄산수를 마시며 뜨거운 속을 식히는 관상을 하십시오.",
-            mantra: "OM VAJRA ARGA SOHA (옴 바즈라 아르가 소하)"
-        },
-        'Yellow': { 
-            hue: 60, color: 'var(--neon-yellow)',
-            gridArea: 'south',
-            direction_kr: '남방 (South)',
-            sanskrit_kr: '보생불 (Ratnasambhava)',
-            wisdom_kr: '평등성지 (Equality Wisdom)',
-            // Diagnosis & Remedy
-            diagnosis: "자존감 결핍 / 혹은 오만",
-            sutra: "「나다, 남이다 하는 분별을 내지 마라. 모든 존재는 본래 평등하다.」 - 유마경",
-            practice: "[대지 접촉] 척추를 곧게 펴고 앉아 엉덩이가 바닥에 닿는 느낌에 집중하십시오. 당신은 이미 이 대지처럼 견고하고 풍요롭습니다.",
-            mantra: "OM RATNA SURYA SOHA (옴 라트나 수리야 소하)"
-        },
-        'Red': { 
-            hue: 0, color: 'var(--neon-red)',
-            gridArea: 'west',
-            direction_kr: '서방 (West)',
-            sanskrit_kr: '아미타불 (Amitabha)',
-            wisdom_kr: '묘관찰지 (Discriminating Wisdom)',
-            // Diagnosis & Remedy
-            diagnosis: "강렬한 욕망 / 관계의 갈증",
-            sutra: "「욕망은 소금물과 같아서 마실수록 목이 마르다. 오직 자비심만이 이 갈증을 재운다.」 - 법구경",
-            practice: "[자비 변환] 타인을 향한 뜨거운 욕망을, 그들이 행복하기를 바라는 따뜻한 자비심으로 상상하며 심장으로 호흡하십시오.",
-            mantra: "OM ARO LIK SOHA (옴 아로 릭 소하)"
-        },
-        'Green': { 
-            hue: 120, color: 'var(--neon-green)',
-            gridArea: 'north',
-            direction_kr: '북방 (North)',
-            sanskrit_kr: '불공성취불 (Amoghasiddhi)',
-            wisdom_kr: '성소작지 (All-Accomplishing Wisdom)',
-            // Diagnosis & Remedy
-            diagnosis: "실행 불안 / 질투와 조급함",
-            sutra: "「두려워 마라. 행하는 자에게 길은 열린다. 모든 것은 마음이 지어내는 것이다.」 - 화엄경",
-            practice: "[즉각 행동] 생각이 많으면 발이 묶입니다. 가장 작은 일 하나를 지금 당장 실행하십시오. (예: 책상 정리, 스쿼트 10회)",
-            mantra: "OM TARE TUTTARE TURE SOHA (옴 타레 투타레 투레 소하)"
-        }
+    // 기본 만다라 정보
+    const BASE_INFO = {
+        'White': { color: 'var(--neon-white)', gridArea: 'center', direction_kr: '중앙 (CENTER)', sanskrit_kr: '비로자나불', wisdom_kr: '법계체성지', hue: 0 },
+        'Blue':  { color: 'var(--neon-blue)',  gridArea: 'east',   direction_kr: '동방 (EAST)',   sanskrit_kr: '아촉불',     wisdom_kr: '대원경지',   hue: 240 },
+        'Yellow':{ color: 'var(--neon-yellow)',gridArea: 'south',  direction_kr: '남방 (SOUTH)',  sanskrit_kr: '보생불',     wisdom_kr: '평등성지',   hue: 60 },
+        'Red':   { color: 'var(--neon-red)',   gridArea: 'west',   direction_kr: '서방 (WEST)',   sanskrit_kr: '아미타불',   wisdom_kr: '묘관찰지',   hue: 0 },
+        'Green': { color: 'var(--neon-green)', gridArea: 'north',  direction_kr: '북방 (NORTH)',  sanskrit_kr: '불공성취불', wisdom_kr: '성소작지',   hue: 120 }
     };
+    const MANDALA_KEYS = ['Green', 'Red', 'White', 'Blue', 'Yellow'];
 
-    // Mandala Grid Order (for looping)
-    const MANDALA_KEYS = ['Green', 'Red', 'White', 'Blue', 'Yellow']; // N, W, C, E, S order for layout
+    // 버튼 이벤트
+    btnDeep.addEventListener('click', () => {
+        deepContent.style.display = 'block';
+        btnDeep.style.display = 'none'; // 버튼 숨김
+        deepContent.scrollIntoView({ behavior: 'smooth' });
+    });
 
     uploadInput.addEventListener('change', handleFile);
 
@@ -226,7 +229,9 @@
         const file = e.target.files[0];
         if (!file) return;
         resetUI();
-        dropZone.classList.add('scanning'); dropZone.innerHTML = "<span>ॐ</span>";
+        dropZone.classList.add('scanning'); 
+        dropZone.querySelector('.seed-icon').innerHTML = "ॐ"; 
+        dropZone.querySelector('.upload-hint').innerHTML = "ANALYZING...";
 
         const img = new Image();
         img.onload = () => {
@@ -235,7 +240,12 @@
             if (w > h) { if (w > MAX_SIZE) { h *= MAX_SIZE/w; w = MAX_SIZE; } } 
             else { if (h > MAX_SIZE) { w *= MAX_SIZE/h; h = MAX_SIZE; } }
             canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
-            setTimeout(() => { analyzeFuzzy(ctx.getImageData(0,0,w,h)); dropZone.classList.remove('scanning'); dropZone.innerHTML = "<span>𑖝𑖾</span>"; }, 800);
+            setTimeout(() => { 
+                analyzeFuzzy(ctx.getImageData(0,0,w,h)); 
+                dropZone.classList.remove('scanning'); 
+                dropZone.querySelector('.seed-icon').innerHTML = "𑖝𑖾"; 
+                dropZone.querySelector('.upload-hint').innerHTML = "CLICK TO UPLOAD IMAGE";
+            }, 800);
         };
         img.src = URL.createObjectURL(file);
     }
@@ -244,9 +254,201 @@
         mandalaGrid.innerHTML = '';
         diagnosisSection.style.display = 'none';
         remedySection.style.display = 'none';
+        deepTrigger.style.display = 'none';
+        deepContent.style.display = 'none';
+        btnDeep.style.display = 'inline-block';
     }
 
-    function rgbToHsv(r, g, b) { /* (이전과 동일) */ r/=255,g/=255,b/=255;let max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,v=max;let d=max-min;s=max==0?0:d/max;if(max==min){h=0}else{switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6}return[h*360,s,v]; }
+    // --- 퍼지 로직 & 오라클 데이터베이스 (발음 수정 반영) ---
+    function getOracleData(primary, secondary, intensity) {
+        const isExtreme = intensity > 50; 
+        
+        const DB = {
+            'White': {
+                extreme: {
+                    diag: "압도적인 혼란 / 혹은 무한한 공허",
+                    sutra: "「허공은 부서지지 않으나, 만상은 허공 속에서 생겨나고 사라진다.」 - 능엄경",
+                    prac: "[공성 체험] 시선을 하늘에 고정하고 단호하게 '팟(PHAT)!' 하고 외쳐 생각을 끊으십시오.",
+                    mantra: "OM VAIROCANA MALA SVAHA",
+                    // Deep Dive Data
+                    deep_sutra_key: "Surangama Sutra text",
+                    deep_sutra_desc: "능엄경(Shurangama Sutra)은 망상을 깨뜨리는 가장 강력한 경전입니다.",
+                    deep_steps: [
+                        "편안하게 앉아 눈을 반쯤 뜹니다.",
+                        "눈앞의 허공을 응시하며 '이 생각은 어디서 왔는가?' 질문합니다.",
+                        "생각이 꼬리를 물면 박수를 치듯 강하게 '팟(PHAT)!' 하고 외칩니다.",
+                        "소리가 사라진 직후의 텅 빈 침묵(Gap)을 1분간 관찰하십시오."
+                    ],
+                    deep_audio_key: "Vairocana Mantra chanting"
+                },
+                normal: {
+                    diag: "순수한 잠재력 / 백지 상태",
+                    sutra: "「본래 마음에는 한 물건도 없다.」 - 육조단경",
+                    prac: "[호흡 관찰] 단순히 들어오고 나가는 숨의 감각만 10번 세십시오.",
+                    mantra: "OM VAIROCANA HUM",
+                    deep_sutra_key: "Platform Sutra text",
+                    deep_sutra_desc: "육조단경(Platform Sutra)은 본래 청정한 마음을 직관하게 합니다.",
+                    deep_steps: [
+                        "코끝에 의식을 집중합니다.",
+                        "숨이 들어올 때 '하나', 나갈 때 '둘'을 셉니다.",
+                        "10까지 세고 다시 1로 돌아옵니다.",
+                        "숫자를 놓치면 처음부터 다시 시작합니다."
+                    ],
+                    deep_audio_key: "Maha Vairochana Mantra"
+                }
+            },
+            'Blue': {
+                extreme: {
+                    diag: "폭발 직전의 분노 / 차가운 혐오",
+                    sutra: "「분노를 다스리지 못하는 자는 독사를 품에 안고 자는 것과 같다.」 - 입보리행론",
+                    prac: "[바즈라 정화] 심장의 푸른 '훔' 자가 불길을 물로 바꾸는 상상을 하십시오.",
+                    mantra: "OM VAJRA CHANDA MAHA ROSHANA HUM PHAT",
+                    deep_sutra_key: "Bodhicharyavatara text",
+                    deep_sutra_desc: "입보리행론(Way of the Bodhisattva) 제6장 '인욕품'을 읽으십시오.",
+                    deep_steps: [
+                        "자신의 심장에 불타는 붉은 공이 있다고 상상합니다 (분노).",
+                        "정수리에서 시원한 푸른 감로수가 쏟아져 내립니다.",
+                        "물이 심장에 닿는 순간 '치이익' 소리와 함께 불이 꺼집니다.",
+                        "몸 밖으로 검은 연기가 빠져나가는 것을 지켜보십시오."
+                    ],
+                    deep_audio_key: "Acala Mantra Budong Myoo"
+                },
+                normal: {
+                    diag: "냉철한 이성 / 명료한 거울",
+                    sutra: "「거울은 사물을 비추되 흔적을 남기지 않는다.」 - 대원경지송",
+                    prac: "[객관화] 감정을 뺀 사실(Fact)만 종이에 적어보십시오.",
+                    mantra: "OM AKSHOBHYA VAJRA SVAHA",
+                    deep_sutra_key: "Vimalakirti Sutra wisdom",
+                    deep_sutra_desc: "유마경(Vimalakirti Sutra)의 불이법문을 통해 분별을 끊으십시오.",
+                    deep_steps: [
+                        "자신을 투명한 거울이라고 상상합니다.",
+                        "떠오르는 감정을 거울에 비친 영상으로 바라봅니다.",
+                        "'이것은 내 것이 아니다'라고 되뇝니다.",
+                        "영상이 사라진 후 거울의 깨끗함만 느낍니다."
+                    ],
+                    deep_audio_key: "Akshobhya Buddha Mantra"
+                }
+            },
+            'Yellow': {
+                extreme: {
+                    diag: "비대한 자아 / 오만과 고집",
+                    sutra: "「나라는 상(Ego)이 있으면 보살이 아니다.」 - 금강경",
+                    prac: "[오체투지] 자존심을 땅에 내려놓는 절을 3번 하십시오.",
+                    mantra: "OM RATNASAMBHAVA TRAM",
+                    deep_sutra_key: "Diamond Sutra text",
+                    deep_sutra_desc: "금강경(Diamond Sutra)은 에고를 부수는 가장 강력한 망치입니다.",
+                    deep_steps: [
+                        "일어서서 합장하고 내 안의 오만함을 인정합니다.",
+                        "천천히 무릎, 팔꿈치, 이마를 땅에 댑니다 (오체투지).",
+                        "땅의 낮은 곳에 머리를 대고 '나는 흙으로 돌아간다' 생각합니다.",
+                        "일어나며 새로운 겸손한 자아로 다시 태어납니다."
+                    ],
+                    deep_audio_key: "Ratnasambhava Mantra"
+                },
+                normal: {
+                    diag: "내면의 풍요 / 건강한 자존감",
+                    sutra: "「진흙 속에서도 연꽃은 피어난다.」 - 법화경",
+                    prac: "[보시 수행] 오늘 타인에게 작은 친절을 베푸십시오.",
+                    mantra: "OM RATNA SURYA SVAHA",
+                    deep_sutra_key: "Lotus Sutra text",
+                    deep_sutra_desc: "법화경(Lotus Sutra)은 당신이 본래 부처임을 일깨워줍니다.",
+                    deep_steps: [
+                        "가슴 중앙에 황금색 보석이 빛난다고 상상합니다.",
+                        "숨을 내쉴 때마다 황금빛이 주변으로 퍼져나갑니다.",
+                        "그 빛이 닿는 모든 사람에게 풍요를 선물합니다.",
+                        "'나는 이미 충분하다'라고 3번 확언합니다."
+                    ],
+                    deep_audio_key: "Yellow Jambhala Mantra"
+                }
+            },
+            'Red': {
+                extreme: {
+                    diag: "타오르는 갈망 / 멈출 수 없는 집착",
+                    sutra: "「애욕은 횃불을 잡고 바람을 거슬러 가는 것과 같다.」 - 사십이장경",
+                    prac: "[부정관] 이 욕망의 대상이 뼈와 살일 뿐임을 직시하십시오.",
+                    mantra: "OM AMITABHA HRIH SVAHA",
+                    deep_sutra_key: "Sutra of Forty-two Chapters",
+                    deep_sutra_desc: "사십이장경은 욕망의 실체를 적나라하게 보여줍니다.",
+                    deep_steps: [
+                        "집착하고 있는 대상(사람/물건)을 떠올립니다.",
+                        "그 대상의 피부가 벗겨지고 뼈만 남은 모습을 상상합니다 (해골).",
+                        "그 뼈가 가루가 되어 바람에 흩어지는 것을 봅니다.",
+                        "불타는 마음이 재가 되어 차갑게 식는 것을 느낍니다."
+                    ],
+                    deep_audio_key: "Amitabha Buddha Mantra Hrih"
+                },
+                normal: {
+                    diag: "따뜻한 자비 / 인간적인 매력",
+                    sutra: "「자비심은 적을 친구로 만들고, 독을 약으로 바꾼다.」 - 자비경",
+                    prac: "[통렌 수행] 세상의 고통을 들이마시고, 행복을 내쉬십시오.",
+                    mantra: "OM ARO LIK SVAHA",
+                    deep_sutra_key: "Metta Sutta text",
+                    deep_sutra_desc: "자비경(Metta Sutta)은 사랑의 에너지를 확장시킵니다.",
+                    deep_steps: [
+                        "사랑하는 사람이나 귀여운 동물을 떠올립니다.",
+                        "검은 연기(그들의 고통)를 들이마셔 내 심장에서 태웁니다.",
+                        "하얀 빛(나의 행복)을 내쉬며 그들에게 보냅니다.",
+                        "이 대상을 싫어하는 사람에게까지 확장합니다."
+                    ],
+                    deep_audio_key: "Guanyin Mantra Compassion"
+                }
+            },
+            'Green': {
+                extreme: {
+                    diag: "극심한 불안 / 쫓기는 듯한 초조함",
+                    sutra: "「과거는 지나갔고 미래는 오지 않았다. 오직 지금뿐이다.」 - 아함경",
+                    prac: "[그라운딩] 신발을 벗고 맨발로 땅을 딛고 걸으십시오.",
+                    mantra: "OM TARE TUTTARE TURE MAMA AYUH PUNYE JNANA PUSHTIM KURU SVAHA",
+                    deep_sutra_key: "Heart Sutra text",
+                    deep_sutra_desc: "반야심경(Heart Sutra)은 불안의 실체가 없음을 알려줍니다.",
+                    deep_steps: [
+                        "일어서서 발바닥에 의식을 둡니다.",
+                        "오른발을 들 때 '듦', 놓을 때 '놓음'을 알아차립니다.",
+                        "아주 천천히 방 안을 걷습니다.",
+                        "머리의 열기가 발바닥으로 내려가 땅으로 빠져나갑니다."
+                    ],
+                    deep_audio_key: "White Tara Mantra Long Life"
+                },
+                normal: {
+                    diag: "성취의 동력 / 실행하는 힘",
+                    sutra: "「무소의 뿔처럼 혼자서 가라.」 - 숫타니파타",
+                    prac: "[단호한 행동] 고민하던 일을 지금 당장 1분만 실행하십시오.",
+                    mantra: "OM TARE TUTTARE TURE SVAHA",
+                    deep_sutra_key: "Suttanipata Rhinoceros Horn",
+                    deep_sutra_desc: "숫타니파타(Sutta Nipata)는 홀로 서는 용기를 줍니다.",
+                    deep_steps: [
+                        "지금 가장 미루고 있는 일 하나를 정합니다.",
+                        "타이머를 5분에 맞춥니다.",
+                        "아무 생각 없이 기계처럼 그 일을 시작합니다.",
+                        "알람이 울리면 멈추고 성취감을 느낍니다."
+                    ],
+                    deep_audio_key: "Green Tara Mantra"
+                }
+            }
+        };
+
+        if (primary === 'Red' && secondary === 'Blue' && intensity > 30) {
+            return {
+                diag: "냉정과 열정의 충돌 / 내부 갈등",
+                sutra: "「번뇌가 곧 보리(깨달음)다.」 - 유식론",
+                prac: "[합일 명상] 붉은 기운과 푸른 기운이 배꼽 아래에서 섞입니다.",
+                mantra: "OM AH HUM",
+                deep_sutra_key: "Vijnaptimatrata text",
+                deep_sutra_desc: "유식론은 마음의 작용 원리를 설명해 줍니다.",
+                deep_steps: [
+                    "오른손(이성)과 왼손(감성)을 무릎 위에 둡니다.",
+                    "두 손을 천천히 가슴 앞으로 모아 합장합니다.",
+                    "두 에너지가 만나 보라색 빛으로 변하는 것을 상상합니다.",
+                    "그 빛을 단전(배꼽 아래)으로 내립니다."
+                ],
+                deep_audio_key: "Om Ah Hum Mantra"
+            };
+        }
+
+        return isExtreme ? DB[primary].extreme : DB[primary].normal;
+    }
+
+    function rgbToHsv(r, g, b) { r/=255,g/=255,b/=255;let max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,v=max;let d=max-min;s=max==0?0:d/max;if(max==min){h=0}else{switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6}return[h*360,s,v]; }
     function getMembership(value, target, range=45) { let diff=Math.abs(value-target);if(diff>180)diff=360-diff;if(diff>range)return 0;return 1-(diff/range); }
 
     function analyzeFuzzy(imageData) {
@@ -255,48 +457,70 @@
         for (let i=0; i<data.length; i+=16) {
             let r=data[i],g=data[i+1],b=data[i+2]; let [h,s,v]=rgbToHsv(r,g,b);
             let whiteScore=0; if(s<0.15 && v>0.8) { whiteScore=(1-s)*v; scores['White']+=whiteScore; }
-            if(whiteScore<0.8) { for(let key of ['Red','Blue','Yellow','Green']){ let mem=getMembership(h,TARGETS[key].hue); let intensity=mem*s*v; if(intensity>0)scores[key]+=intensity; }}
+            if(whiteScore<0.8) { for(let key of ['Red','Blue','Yellow','Green']){ let mem=getMembership(h,BASE_INFO[key].hue); let intensity=mem*s*v; if(intensity>0)scores[key]+=intensity; }}
         }
         let totalScore = Object.values(scores).reduce((a,b)=>a+b,0);
 
-        // 1. 상단 만다라 그리드 렌더링
+        // Render Mandala
         MANDALA_KEYS.forEach(key => {
             let percent = totalScore > 0 ? (scores[key]/totalScore*100).toFixed(1) : 0;
+            let info = BASE_INFO[key];
             let card = document.createElement('div');
-            card.className = 'card'; card.style.borderColor = TARGETS[key].color; card.style.gridArea = TARGETS[key].gridArea;
-            card.innerHTML = `
-                <div class="direction-label">${TARGETS[key].direction_kr}</div>
-                <div class="card-title-kr">${TARGETS[key].sanskrit_kr}</div>
-                <div class="card-title-en">${TARGETS[key].wisdom_kr.split('(')[1].replace(')','')}</div>
-                <div class="card-value" style="color:${TARGETS[key].color}">${percent}%</div>
-            `;
+            card.className = 'card'; card.style.borderColor = info.color; card.style.gridArea = info.gridArea;
+            card.innerHTML = `<div class="direction-label">${info.direction_kr}</div><div class="card-titles"><div class="card-title-kr">${info.sanskrit_kr}</div><div class="card-title-en">${info.wisdom_kr.split('(')[1] ? info.wisdom_kr.split('(')[1].replace(')','') : 'Wisdom'}</div></div><div class="card-value" style="color:${info.color}">${percent}%</div>`;
             mandalaGrid.appendChild(card);
         });
 
-        // 2. & 3. 진단 및 처방 렌더링 (가장 높은 점수 기준)
+        // Oracle Logic
         if (totalScore > 0) {
-            let maxKey = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            let data = TARGETS[maxKey];
+            let sortedKeys = Object.keys(scores).sort((a,b) => scores[b] - scores[a]);
+            let primary = sortedKeys[0];
+            let secondary = sortedKeys[1];
+            let primaryScore = (scores[primary]/totalScore*100);
 
-            // 진단 박스
-            document.getElementById('diag-card').style.borderColor = data.color;
-            document.getElementById('diag-result').innerText = data.diagnosis;
-            document.getElementById('diag-result').style.color = data.color;
+            let oracle = getOracleData(primary, secondary, primaryScore);
+            let color = BASE_INFO[primary] ? BASE_INFO[primary].color : '#fff';
+
+            // Diagnosis
+            document.getElementById('diag-card').style.borderColor = color;
+            document.getElementById('diag-result').innerText = oracle.diag;
+            document.getElementById('diag-result').style.color = color;
             diagnosisSection.style.display = 'block';
 
-            // 처방 섹션 (불경 -> 수행 -> 만트라)
-            document.getElementById('sutra-box').style.borderColor = data.color;
-            document.getElementById('sutra-text').innerText = data.sutra;
-            
-            document.getElementById('practice-box').style.borderColor = data.color;
-            document.getElementById('practice-text').innerText = data.practice;
-
-            document.getElementById('mantra-box').style.borderColor = data.color;
-            document.getElementById('mantra-text').innerText = data.mantra;
-            document.getElementById('mantra-text').style.color = data.color;
-            document.getElementById('mantra-text').style.borderColor = data.color;
-
+            // Initial Remedy
+            document.getElementById('sutra-box').style.borderColor = color;
+            document.getElementById('sutra-text').innerText = oracle.sutra;
+            document.getElementById('practice-box').style.borderColor = color;
+            document.getElementById('practice-text').innerText = oracle.prac;
+            document.getElementById('mantra-box').style.borderColor = color;
+            document.getElementById('mantra-text').innerText = oracle.mantra;
+            document.getElementById('mantra-text').style.color = color;
             remedySection.style.display = 'block';
+
+            // *** DEEP DIVE DATA POPULATION ***
+            document.querySelector('.neon-btn').style.borderColor = color;
+            document.querySelector('.neon-btn').style.color = color;
+            
+            // 1. Sutra Link
+            document.getElementById('deep-sutra-desc').innerText = oracle.deep_sutra_desc;
+            document.getElementById('link-sutra').href = `https://www.google.com/search?q=${encodeURIComponent(oracle.deep_sutra_key + " pdf or full text")}`;
+            
+            // 2. Steps
+            const stepsList = document.getElementById('deep-steps');
+            stepsList.innerHTML = '';
+            oracle.deep_steps.forEach((step, index) => {
+                let li = document.createElement('li');
+                li.innerHTML = `<strong>STEP ${index+1}.</strong> ${step}`;
+                stepsList.appendChild(li);
+            });
+
+            // 3. Audio Link
+            const audioQuery = encodeURIComponent(oracle.deep_audio_key);
+            document.getElementById('link-youtube').href = `https://www.youtube.com/results?search_query=${audioQuery}`;
+            document.getElementById('link-spotify').href = `https://open.spotify.com/search/${audioQuery}`;
+
+            // Show Button
+            deepTrigger.style.display = 'block';
         }
     }
 </script>
