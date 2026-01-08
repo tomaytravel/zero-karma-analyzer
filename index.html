@@ -90,6 +90,16 @@
             background: var(--glass); border-left: 4px solid #555; padding: 25px 20px; margin-bottom: 25px; 
             position: relative;
         }
+        /* ▼▼▼ [아래 코드를 복사해서 그 밑에 붙여넣으세요] ▼▼▼ */
+
+        .section-header {
+        font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 1.2rem;
+        color: #fff; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #333;
+        display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .section-header span { 
+        font-size: 0.7rem; color: var(--neon-green); font-family: 'Orbitron', sans-serif; letter-spacing: 1px; margin-bottom: 3px; 
+        }
         .remedy-label { font-size: 0.9rem; color: #bbb; margin-bottom: 12px; display: block; font-weight: 700; letter-spacing: 0.5px;}
         .sutra-text { font-size: 1.05rem; font-style: italic; color: #ddd; line-height: 1.6; word-break: keep-all; margin-bottom: 15px; }
         .practice-text { font-size: 1rem; color: #fff; line-height: 1.7; word-break: keep-all; white-space: pre-line; margin-bottom: 15px;}
@@ -165,6 +175,15 @@
     </div>
 
     <div id="remedy-section">
+    
+    <div class="section-header">
+        명상 처방
+        <span>MEDITATION PRESCRIPTION</span>
+    </div>
+
+    <div class="remedy-box" id="sutra-box">
+        <span class="remedy-label">Ⅰ. 수트라 (SUTRA WISDOM)</span>
+        /* ▲▲▲ -------------------------------------------------------- ▲▲▲ */
         
         <div class="remedy-box" id="sutra-box">
             <span class="remedy-label">Ⅰ. 수트라 (SUTRA WISDOM)</span>
